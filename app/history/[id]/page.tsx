@@ -37,15 +37,7 @@ type Clinic = {
   hours: string;
 };
 
-type PageProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default function HistoryDetails({ params }: PageProps) {
-  const { id } = params;
-
+export default function HistoryDetails() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedClinic, setSelectedClinic] = useState({});
 
@@ -60,7 +52,7 @@ export default function HistoryDetails({ params }: PageProps) {
         <Link href="/history" className="flex">
           <ArrowLeft /> <span className="ml-2 font-bold">Back</span>
         </Link>
-        <h2 className="font-bold">Checkup {id}</h2>
+        <h2 className="font-bold">Checkup</h2>
       </div>
       {/* CHAT convo */}
       <div className="w-full justify-items-end">
