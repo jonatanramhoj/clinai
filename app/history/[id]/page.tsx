@@ -37,7 +37,13 @@ type Clinic = {
   hours: string;
 };
 
-export default function HistoryDetails({ params }: { params: { id: string } }) {
+type PageProps = {
+  params: {
+    id: string;
+  };
+};
+
+export default function HistoryDetails({ params }: PageProps) {
   const { id } = params;
 
   const [isOpen, setIsOpen] = useState(false);
