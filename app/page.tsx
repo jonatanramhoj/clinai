@@ -16,26 +16,26 @@ type Clinic = {
 // const mockResponse =
 //   "Sounds like a mild cold. You may want to visit a general practictioner.";
 
-// const clinics = [
-//   {
-//     id: 1,
-//     name: "Familjeläkarna Centrum",
-//     address: "Bredgränd 18, 753 20 Uppsala (600m)",
-//     hours: "Closed - opens 9 am Mon",
-//   },
-//   {
-//     id: 2,
-//     name: "Fålhagens health center",
-//     address: "B, Stationsgatan 26, 753 23 Uppsala (1.1km)",
-//     hours: "Closed - opens 9 am Mon",
-//   },
-//   {
-//     id: 3,
-//     name: "Meliva vårdcentral Kungshörnet",
-//     address: "Kungsgatan 115, 753 18 Uppsala (1.6km)",
-//     hours: "Closed - opens 9 am Mon",
-//   },
-// ];
+const clinics = [
+  {
+    id: 1,
+    name: "Familjeläkarna Centrum",
+    address: "Bredgränd 18, 753 20 Uppsala (600m)",
+    hours: "Closed - opens 9 am Mon",
+  },
+  {
+    id: 2,
+    name: "Fålhagens health center",
+    address: "B, Stationsgatan 26, 753 23 Uppsala (1.1km)",
+    hours: "Closed - opens 9 am Mon",
+  },
+  {
+    id: 3,
+    name: "Meliva vårdcentral Kungshörnet",
+    address: "Kungsgatan 115, 753 18 Uppsala (1.6km)",
+    hours: "Closed - opens 9 am Mon",
+  },
+];
 
 export default function Home() {
   const [userQuery, setUserQuery] = useState("");
@@ -99,10 +99,10 @@ export default function Home() {
     setResponse("");
   };
 
-  // const handleSelectClinic = (clinic: Clinic) => {
-  //   setSelectedClinic(clinic);
-  //   setIsOpen(!isOpen);
-  // };
+  const handleSelectClinic = (clinic: Clinic) => {
+    setSelectedClinic(clinic);
+    setIsOpen(!isOpen);
+  };
 
   useEffect(() => {
     const handleEnter = (e: KeyboardEvent) => {
@@ -173,7 +173,7 @@ export default function Home() {
               <ClinicsMap clinicType="General clinic" />
             </div>
             <ul>
-              {/* {clinics.map((clinic) => (
+              {clinics.map((clinic) => (
                 <li
                   key={clinic.id}
                   className="mb-2 pb-2 border-b border-gray-500 last-of-type:border-0 cursor-pointer"
@@ -184,7 +184,7 @@ export default function Home() {
                   </h3>
                   <p className="text-gray-300">{clinic.address}</p>
                 </li>
-              ))} */}
+              ))}
             </ul>
           </div>
         )}
