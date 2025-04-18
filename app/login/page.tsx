@@ -1,5 +1,8 @@
 "use client";
+import useAuth from "@/hooks/useAuth";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Typewriter } from "react-simple-typewriter";
 
 const taglines = [
@@ -12,6 +15,15 @@ const taglines = [
 ];
 
 export default function Login() {
+  const { signinWithGoogle, user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [router, user]);
+
   return (
     <div className="w-full py-4 px-8">
       <h1 className="font-bold text-2xl">
@@ -33,7 +45,10 @@ export default function Login() {
             />
           </span>
         </div>
-        <button className="mb-4 text-md font-bold w-full rounded-xl p-4 bg-white cursor-pointer hover:bg-white/80 ease-in-out duration-200 text-gray-700">
+        <button
+          onClick={signinWithGoogle}
+          className="mb-4 text-md font-bold w-full rounded-xl p-4 bg-white cursor-pointer hover:bg-white/80 ease-in-out duration-200 text-gray-700"
+        >
           Continue with Google
         </button>
         <div className="w-full justify-center px-4">

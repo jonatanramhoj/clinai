@@ -9,12 +9,15 @@ import ArrowRightToBracket from "@/icons/ArrowRightToBracket";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
+import useAuth from "@/hooks/useAuth";
 
 const Nav = () => {
   const pathname = usePathname();
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const menuTriggerRef = useRef<HTMLButtonElement | null>(null);
+
+  const { signOutUser, user } = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -53,13 +56,15 @@ const Nav = () => {
             className="flex items-center justify-center rounded-full w-[45px] h-[45px] bg-none hover:bg-white/30 ease-in-out duration-250 cursor-pointer"
             ref={menuTriggerRef}
           >
-            <Image
-              src="/profile-pic.png"
-              alt=""
-              width={35}
-              height={35}
-              className="rounded-full"
-            />
+            {user?.photoURL && (
+              <Image
+                src={user.photoURL}
+                alt=""
+                width={35}
+                height={35}
+                className="rounded-full"
+              />
+            )}
           </button>
           {showMenu && (
             <div
@@ -74,7 +79,10 @@ const Nav = () => {
                   </button>
                 </li>
                 <li>
-                  <button className="flex cursor-pointer p-3 bg-none hover:bg-white/10 w-full rounded-lg ease-in-out duration-250">
+                  <button
+                    onClick={signOutUser}
+                    className="flex cursor-pointer p-3 bg-none hover:bg-white/10 w-full rounded-lg ease-in-out duration-250"
+                  >
                     <ArrowRightToBracket />
                     <span className="text-md ml-2">Log out</span>
                   </button>

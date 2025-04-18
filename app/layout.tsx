@@ -2,9 +2,11 @@
 // import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Nav from "@/components/Nav";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import "./globals.css";
+import { useEffect } from "react";
+import useAuth from "@/hooks/useAuth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,8 +28,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const router = useRouter();
+  const { user } = useAuth();
   const pathname = usePathname();
   const hideNav = pathname === "/login";
+
+  useEffect(() => {
+    if (user === null) {
+      router.push("/login");
+    }
+  }, [router, user]);
+
   return (
     <html lang="en">
       <body
