@@ -31,17 +31,19 @@ const clinics = [
 ];
 
 type Clinic = {
-  id: number;
   name: string;
-  address: string;
-  hours: string;
+  formatted_address: string;
+  formatted_phone_number: string;
+  url: string;
 };
 
 export default function HistoryDetails() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedClinic, setSelectedClinic] = useState({});
 
-  const handleSelectClinic = (clinic: Clinic) => {
+  const handleSelectClinic = (
+    clinic: Clinic | google.maps.places.PlaceResult
+  ) => {
     setSelectedClinic(clinic);
     setIsOpen(!isOpen);
   };
