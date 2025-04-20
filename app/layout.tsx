@@ -29,15 +29,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const pathname = usePathname();
   const hideNav = pathname === "/login";
 
   useEffect(() => {
-    if (user === null) {
+    if (!loading && user === null) {
       router.push("/login");
     }
-  }, [router, user]);
+  }, [loading, router, user]);
 
   return (
     <html lang="en">

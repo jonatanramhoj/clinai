@@ -4,38 +4,14 @@ import Loader from "@/components/Loader";
 import Modal from "@/components/Dialog";
 import ArrowUp from "@/icons/ArrowUp";
 import ClinicDetails from "@/components/ClinicDetails";
-import ClinicsMap from "@/components/ClinicsMap";
+import Map from "@/components/Map";
 
 type Clinic = {
-  id: number;
   name: string;
-  address: string;
-  hours: string;
+  formatted_address: string;
+  formatted_phone_number: string;
+  url: string;
 };
-
-// const mockResponse =
-//   "Sounds like a mild cold. You may want to visit a general practictioner.";
-
-const clinics = [
-  {
-    id: 1,
-    name: "Familjeläkarna Centrum",
-    address: "Bredgränd 18, 753 20 Uppsala (600m)",
-    hours: "Closed - opens 9 am Mon",
-  },
-  {
-    id: 2,
-    name: "Fålhagens health center",
-    address: "B, Stationsgatan 26, 753 23 Uppsala (1.1km)",
-    hours: "Closed - opens 9 am Mon",
-  },
-  {
-    id: 3,
-    name: "Meliva vårdcentral Kungshörnet",
-    address: "Kungsgatan 115, 753 18 Uppsala (1.6km)",
-    hours: "Closed - opens 9 am Mon",
-  },
-];
 
 export default function Home() {
   const [userQuery, setUserQuery] = useState("");
@@ -45,10 +21,9 @@ export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedClinic, setSelectedClinic] = useState({});
   const [response, setResponse] = useState("");
-  const [clinic, setClinic] = useState();
+  const [clinicType, setClinicType] = useState("");
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log("e", e.target.value);
     setUserQuery(e.target.value);
   };
 
@@ -63,33 +38,28 @@ export default function Home() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         messages: [
-          //     {
-          //       role: "system",
-          //       content: `You are a helpful health assistant. Always reply with a short, clear possible diagnosis in one sentence.
-          // Your response should help a user find the right type of clinic or doctor nearby. Don't provide detailed medical explanations.
-          // Only include the condition and what type of doctor or clinic they should look for.`,
-          //     },
           {
             role: "system",
-            content:
-              "You are a helpful health assistant. Include the condition and what type of doctor or clinic they should look for. Respond with a JSON object containing 'diagnosis' and 'clinicType', based on the user's symptoms.",
+            content: `You are a helpful and empathetic health assistant. Respond in the **same language** as the user's input. Avoid medical jargon. Keep it friendly and easy to understand. Based on the user's symptoms, respond with a JSON object like:
+          {
+            "diagnosis": "A brief human-readable explanation of the likely condition, including possible causes and what the user should do next.",
+            "clinicType": "The type of doctor or clinic they should consult (e.g. ENT clinic, Urgent Care, Dermatologist)."
+          }`,
           },
-
           { role: "user", content: userQuery },
         ],
       }),
     });
 
     const data = await response.json();
-    // console.log("data", data);
-    // console.log("");
 
     const parsedResponse = JSON.parse(data.message.content);
     const diagnosis = parsedResponse.diagnosis ?? "No diagnosis found";
     const clinicType = parsedResponse.clinicType ?? "No clinic type found";
+    console.log("clinicType", clinicType);
 
     setResponse(diagnosis);
-    setClinic(clinicType);
+    setClinicType(clinicType);
     setIsLoading(false);
   }, [userQuery]);
 
@@ -99,7 +69,9 @@ export default function Home() {
     setResponse("");
   };
 
-  const handleSelectClinic = (clinic: Clinic) => {
+  const handleSelectClinic = (
+    clinic: Clinic | google.maps.places.PlaceResult
+  ) => {
     setSelectedClinic(clinic);
     setIsOpen(!isOpen);
   };
@@ -167,25 +139,19 @@ export default function Home() {
 
         {hasSubmittedPrompt && !isLoading && (
           <div>
-            <p className="mb-4">{response}</p>
-            <h3 className="font-bold mb-2">{clinic}</h3>
+            <p className="mb-4">
+              <span className="font-bold block">Suggested diagnosis</span>
+              {response}
+            </p>
+            <h3 className="mb-2">
+              <span className="font-bold block">Suggested clinics</span>
+            </h3>
             <div className="mb-4">
-              <ClinicsMap clinicType="General clinic" />
+              <Map
+                clinicType={clinicType}
+                handleSelectClinic={handleSelectClinic}
+              />
             </div>
-            <ul>
-              {clinics.map((clinic) => (
-                <li
-                  key={clinic.id}
-                  className="mb-2 pb-2 border-b border-gray-500 last-of-type:border-0 cursor-pointer"
-                  onClick={() => handleSelectClinic(clinic)}
-                >
-                  <h3 className="text-gray-300 font-bold text-lg">
-                    {clinic.name}
-                  </h3>
-                  <p className="text-gray-300">{clinic.address}</p>
-                </li>
-              ))}
-            </ul>
           </div>
         )}
         <Modal

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.1",
+    "@react-google-maps/api": "^2.20.6",
     "firebase": "^11.6.0",
     "next": "15.3.0",
     "openai": "^4.95.1",
