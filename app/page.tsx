@@ -5,13 +5,7 @@ import Modal from "@/components/Dialog";
 import ArrowUp from "@/icons/ArrowUp";
 import ClinicDetails from "@/components/ClinicDetails";
 import Map from "@/components/Map";
-
-type Clinic = {
-  name: string;
-  formatted_address: string;
-  formatted_phone_number: string;
-  url: string;
-};
+import { Clinic } from "@/models/clinics";
 
 export default function Home() {
   const [userQuery, setUserQuery] = useState("");

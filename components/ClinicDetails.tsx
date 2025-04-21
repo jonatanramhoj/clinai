@@ -1,19 +1,35 @@
 import Link from "next/link";
+import { Clinic } from "@/models/clinics";
 
-type Clinic = {
-  name: string;
-  formatted_address: string;
-  formatted_phone_number: string;
-  url: string;
-  opening_hours?: string;
+const StarRating = (rating: number) => {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating - fullStars >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+  return (
+    <span className="text-white font-medium">
+      {"★".repeat(fullStars)}
+      {hasHalfStar && "☆"} {/* optional: use "⯪" or half-star icon */}
+      {"☆".repeat(emptyStars)}
+      <span className="text-gray-300 ml-1">({rating.toFixed(1)})</span>
+    </span>
+  );
 };
 
 const ClinicDetails = ({ clinic }: { clinic: Clinic }) => {
   return (
     <div>
-      <h3 className="font-bold text-xl mb-2">{clinic.name}</h3>
+      <h3 className="font-bold text-xl mb-4">{clinic.name}</h3>
       <ul className="mb-8">
-        <li>{clinic.formatted_address}</li>
+        <li className="mb-2">{clinic.formatted_address}</li>
+        <li>{clinic.rating && StarRating(clinic.rating)}</li>
+        <li>
+          {clinic.opening_hours && clinic.opening_hours.isOpen
+            ? clinic.opening_hours.isOpen()
+              ? "Open now"
+              : "Closed"
+            : "Opening hours unavailable"}
+        </li>
       </ul>
       <div className="flex items-center justify-center">
         <Link
