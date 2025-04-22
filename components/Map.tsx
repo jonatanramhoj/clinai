@@ -48,7 +48,6 @@ export default function MapWithClinics({
           lng: position.coords.longitude,
         };
         setCenter(pos);
-        console.log("position", pos);
       },
       (error) => {
         console.error("Error getting location", error);
@@ -198,7 +197,6 @@ export default function MapWithClinics({
           .filter((place) => place.rating != null)
           .sort((a, b) => b.rating! - a.rating!)
           .map((place) => {
-            console.log("place", place);
             const lat = place.geometry?.location?.lat();
             const lng = place.geometry?.location?.lng();
 
@@ -216,7 +214,11 @@ export default function MapWithClinics({
                 <p className="dark:text-gray-300">
                   {place.formatted_address || place.vicinity}
                 </p>
-                <p>{place.rating && StarRating(place.rating)}</p>
+                <p>
+                  {place.rating && place.rating > 0
+                    ? StarRating(place.rating)
+                    : null}
+                </p>
                 <p>
                   {place.opening_hours && place.opening_hours.isOpen
                     ? place.opening_hours.isOpen()

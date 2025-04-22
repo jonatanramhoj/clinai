@@ -5,6 +5,7 @@ import ArrowLeft from "@/icons/ArrowLeft";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { Clinic } from "@/models/Clinics";
 
 const mockResponse =
   "Sounds like a mild cold. You may want to visit a general practictioner.";
@@ -29,13 +30,6 @@ const clinics = [
     hours: "Closed - opens 9 am Mon",
   },
 ];
-
-type Clinic = {
-  name: string;
-  formatted_address: string;
-  formatted_phone_number: string;
-  url: string;
-};
 
 export default function HistoryDetails() {
   const [isOpen, setIsOpen] = useState(false);

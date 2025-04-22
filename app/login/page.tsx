@@ -31,7 +31,7 @@ export default function Login() {
       </h1>
       <div className="max-w-[600px] m-auto my-20 px-4">
         <div className="text-center mb-20 h-[200px] flex items-center justify-center">
-          <span className="font-bold text-3xl text-gray-400">
+          <span className="font-bold text-3xl dark:text-gray-400">
             <Typewriter
               words={taglines}
               loop={5}
@@ -47,12 +47,12 @@ export default function Login() {
         </div>
         <button
           onClick={signinWithGoogle}
-          className="mb-4 text-md font-bold w-full rounded-xl p-4 bg-white cursor-pointer hover:bg-white/80 ease-in-out duration-200 text-gray-700"
+          className="mb-4 text-md font-bold w-full rounded-xl p-4 border border-gray-300 hover:bg-gray-50 dark:bg-white cursor-pointer dark:hover:bg-white/80 ease-in-out duration-200 text-gray-700"
         >
           Continue with Google
         </button>
         <div className="w-full justify-center px-4">
-          <p className="text-gray-200 text-center text-sm">
+          <p className="dark:text-gray-200 text-center text-sm">
             By continuing, you agree to our{" "}
             <Link className="text-gray-500 underline" href="/terms">
               Terms
@@ -63,7 +63,7 @@ export default function Login() {
             </Link>
             .
           </p>
-          <p className="text-gray-200 text-center text-sm">
+          <p className="dark:text-gray-200 text-center text-sm">
             No account? No problem. We’ll create one for you.
           </p>
         </div>
