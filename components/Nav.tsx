@@ -45,7 +45,7 @@ const Nav = () => {
 
   return (
     <>
-      <div className="w-full py-4 px-4 md:px-8 justify-between flex">
+      <div className="w-full py-4 px-4 md:px-8 justify-between items-center flex">
         <Link href="/" className="font-bold text-xl md:text-2xl leading-none">
           ClinAI <span className="text-gray-600">BETA</span>
         </Link>
