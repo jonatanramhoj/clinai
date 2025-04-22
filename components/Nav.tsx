@@ -45,8 +45,8 @@ const Nav = () => {
 
   return (
     <>
-      <div className="w-full py-4 px-8 justify-between flex">
-        <Link href="/" className="font-bold text-2xl">
+      <div className="w-full py-4 px-4 md:px-8 justify-between flex">
+        <Link href="/" className="font-bold text-xl md:text-2xl leading-none">
           ClinAI <span className="text-gray-600">BETA</span>
         </Link>
         <nav className="flex items-center">
@@ -76,7 +76,7 @@ const Nav = () => {
             </button>
             {showMenu && (
               <div
-                className="dark:bg-[#2f2f2f] p-2 rounded-2xl min-w-[200px] absolute right-0 border border-gray-200 shadow-lg dark:border-0"
+                className="bg-white dark:bg-[#2f2f2f] p-2 rounded-2xl min-w-[200px] absolute right-0 border border-gray-200 shadow-lg dark:border-0"
                 ref={menuRef}
               >
                 <ul className="flex flex-col">

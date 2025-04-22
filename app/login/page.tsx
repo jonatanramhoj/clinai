@@ -29,7 +29,7 @@ export default function Login() {
       <h1 className="font-bold text-2xl">
         ClinAI <span className="text-gray-600">BETA</span>
       </h1>
-      <div className="max-w-[600px] m-auto my-20 px-4">
+      <div className="max-w-[600px] w-full m-auto my-20 px-4">
         <div className="text-center mb-20 h-[200px] flex items-center justify-center">
           <span className="font-bold text-3xl dark:text-gray-400">
             <Typewriter
@@ -61,10 +61,7 @@ export default function Login() {
             <Link className="text-gray-500 underline" href="/privacy">
               Privacy Policy
             </Link>
-            .
-          </p>
-          <p className="dark:text-gray-200 text-center text-sm">
-            No account? No problem. We’ll create one for you.
+            . No account? No problem. We’ll create one for you.
           </p>
         </div>
       </div>

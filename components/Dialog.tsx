@@ -21,11 +21,11 @@ const Modal = ({
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
-        className="relative z-50 bg-red"
+        className="relative z-50 bg-red w-full mx-4 md:mx-0"
       >
         <DialogBackdrop className="fixed inset-0 bg-black/50" />
         <div className="fixed inset-0 flex w-screen items-center justify-center">
-          <DialogPanel className="max-w-lg space-y-4 rounded-2xl bg-white dark:bg-[#2f2f2f] relative">
+          <DialogPanel className="max-w-lg space-y-4 rounded-2xl bg-white dark:bg-[#2f2f2f] relative w-full mx-4 md:mx-0">
             <CloseButton className="cursor-pointer absolute right-5 top-5">
               <Close />
             </CloseButton>

@@ -13,11 +13,11 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-w-[500px] w-full rounded-2xl">
+    <div className="rounded-2xl w-full">
       <div className="w-full border-b border-b-gray-300 dark:border-b-gray-600 p-8">
         <h2 className="text-lg font-bold">Settings</h2>
       </div>
-      <div className="flex w-full p-8 justify-between">
+      <div className="flex w-full p-8 justify-between items-center">
         <span>Theme</span>
         <div>
           {themes.map((theme) => (

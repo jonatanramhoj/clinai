@@ -111,6 +111,7 @@ export default function Home() {
               className="dark:bg-[#2f2f2f] border border-gray-300 dark:border-0 p-4 w-full outline-0 rounded-md shadow-xl"
               onChange={handleChange}
               value={userQuery}
+              autoFocus
             />
             <button
               onClick={handleSubmit}
