@@ -66,7 +66,7 @@ export default function History() {
           <li key={item.date} className="mb-4">
             <Link
               href={`/history/${item.id}`}
-              className="w-full block bg-[#2f2f2f] hover:bg-[#2f2f2f]/80 ease-in-out duration-200 p-4 rounded-lg text-sm cursor-pointer"
+              className="w-full block bg-gray-200 hover:bg-gray-100 dark:bg-[#2f2f2f] dark:hover:bg-[#2f2f2f]/80 ease-in-out duration-200 p-4 rounded-lg text-sm cursor-pointer"
             >
               <h3 className="font-bold text-lg mb-2">{item.date}</h3>
               <p className="mb-1">{item.symptom}</p>

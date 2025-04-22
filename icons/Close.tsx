@@ -1,9 +1,9 @@
 const Close = () => {
   return (
     <svg
-      className="text-white dark:text-white fill-white"
-      height="20px"
-      width="20px"
+      className="fill-dark dark:fill-white"
+      height="14px"
+      width="14px"
       id="Layer_1"
       version="1.1"
       viewBox="0 0 512 512"

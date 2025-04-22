@@ -148,11 +148,11 @@ export default function MapWithClinics({
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
     return (
-      <span className="text-white font-medium">
+      <span className="dark:text-white font-medium">
         {"★".repeat(fullStars)}
         {hasHalfStar && "☆"} {/* optional: use "⯪" or half-star icon */}
         {"☆".repeat(emptyStars)}
-        <span className="text-gray-300 ml-1">({rating.toFixed(1)})</span>
+        <span className="dark:text-gray-300 ml-1">({rating.toFixed(1)})</span>
       </span>
     );
   };
@@ -207,13 +207,13 @@ export default function MapWithClinics({
             return (
               <li
                 key={place.place_id}
-                className="mb-2 pb-2 border-b border-gray-500 cursor-pointer last-of-type:border-b-0"
+                className="mb-2 pb-2 border-b border-gray-200 dark:border-gray-500 cursor-pointer last-of-type:border-b-0"
                 onClick={() => handleMarkerClick(place)}
               >
-                <h3 className="text-gray-300 font-bold text-lg">
+                <h3 className="dark:text-gray-300 font-bold text-lg">
                   {place.name}
                 </h3>
-                <p className="text-gray-300">
+                <p className="dark:text-gray-300">
                   {place.formatted_address || place.vicinity}
                 </p>
                 <p>{place.rating && StarRating(place.rating)}</p>

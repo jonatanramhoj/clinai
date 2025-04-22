@@ -5,7 +5,7 @@ import Modal from "@/components/Dialog";
 import ArrowUp from "@/icons/ArrowUp";
 import ClinicDetails from "@/components/ClinicDetails";
 import Map from "@/components/Map";
-import { Clinic } from "@/models/clinics";
+import { Clinic } from "@/models/Clinics";
 
 export default function Home() {
   const [userQuery, setUserQuery] = useState("");
@@ -91,14 +91,14 @@ export default function Home() {
       <div className="max-w-[600px] m-auto px-4">
         <h1 className="font-bold text-3xl mb-4">Feeling unwell?</h1>
 
-        <p className="text-gray-300 mb-4">
+        <p className="dark:text-gray-300 mb-4">
           Share your symptoms with us, and we’ll suggest a possible diagnosis,
           plus show you nearby clinics that can help.{" "}
         </p>
         {hasSubmittedPrompt && (
           <button
             onClick={resetChat}
-            className="text-sm font-bold w-full rounded-xl p-4 bg-white cursor-pointer hover:bg-white/80 ease-in-out duration-200 text-gray-700"
+            className="text-sm font-bold w-full rounded-xl p-4 border border-gray-200 hover:bg-gray-50 dark:bg-white cursor-pointer dark:hover:bg-white/80 ease-in-out duration-200 dark:text-gray-700"
           >
             New Checkup
           </button>
@@ -108,13 +108,13 @@ export default function Home() {
             <input
               type="search"
               placeholder="Describe your symptoms"
-              className="bg-[#2f2f2f] rounded-md border-0 p-4 w-full outline-0"
+              className="dark:bg-[#2f2f2f] border border-gray-300 dark:border-0 p-4 w-full outline-0 rounded-md shadow-xl"
               onChange={handleChange}
               value={userQuery}
             />
             <button
               onClick={handleSubmit}
-              className="w-8 h-8 rounded-full flex justify-center items-center bg-white absolute right-4 top-3 cursor-pointer hover:opacity-80"
+              className="w-8 h-8 rounded-full flex justify-center items-center bg-[#2f2f2f] dark:bg-white absolute right-4 top-3 cursor-pointer hover:opacity-80"
             >
               <ArrowUp />
             </button>
@@ -123,7 +123,7 @@ export default function Home() {
         {/* CHAT convo */}
         {hasSubmittedPrompt && (
           <div className="w-full justify-items-end">
-            <div className="bg-[#2f2f2f] rounded-3xl py-3 px-5 my-6 self-end">
+            <div className="bg-gray-100 dark:bg-[#2f2f2f] rounded-3xl py-3 px-5 my-6 self-end">
               <p>{userSymptom}</p>
             </div>
           </div>
