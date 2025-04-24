@@ -1,5 +1,5 @@
 "use client";
-import useAuth from "@/hooks/useAuth";
+import useFirebase from "@/hooks/useFirebase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -15,7 +15,7 @@ const taglines = [
 ];
 
 export default function Login() {
-  const { signinWithGoogle, user } = useAuth();
+  const { signinWithGoogle, user } = useFirebase();
   const router = useRouter();
 
   useEffect(() => {

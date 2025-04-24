@@ -5,7 +5,7 @@ import ArrowLeft from "@/icons/ArrowLeft";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Clinic } from "@/models/Clinics";
+import { Clinic } from "@/models/Types";
 
 const mockResponse =
   "Sounds like a mild cold. You may want to visit a general practictioner.";

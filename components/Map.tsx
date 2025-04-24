@@ -18,14 +18,16 @@ const mapContainerStyle = {
 export default function MapWithClinics({
   clinicType,
   handleSelectClinic,
+  clinics,
+  setClinics,
 }: {
   clinicType: string;
   handleSelectClinic: (place: google.maps.places.PlaceResult) => void;
+  clinics: google.maps.places.PlaceResult[];
+  setClinics: (clinic: google.maps.places.PlaceResult[]) => void;
 }) {
   const [center, setCenter] = useState<google.maps.LatLngLiteral | null>(null);
-  const [markers, setMarkers] = useState<google.maps.places.PlaceResult[]>([]);
   const [mapLoaded, setMapLoaded] = useState(false);
-
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
     libraries,
@@ -75,9 +77,9 @@ export default function MapWithClinics({
         results.length > 2
       ) {
         const sorted = results
-          .filter((place) => place.rating != null)
+          .filter((place) => place.rating !== null)
           .sort((a, b) => b.rating! - a.rating!);
-        setMarkers(sorted);
+        setClinics(sorted);
       } else {
         console.warn(
           "Nearby search sparse or failed. Falling back to textSearch."
@@ -93,16 +95,16 @@ export default function MapWithClinics({
             textResults
           ) {
             const sorted = textResults
-              .filter((place) => place.rating != null)
+              .filter((place) => place.rating !== null)
               .sort((a, b) => b.rating! - a.rating!);
-            setMarkers(sorted);
+            setClinics(sorted);
           } else {
             console.warn("Text search also failed:", textStatus);
           }
         });
       }
     });
-  }, [center, clinicType, mapLoaded]);
+  }, [center, clinicType, mapLoaded, setClinics]);
 
   const getPlaceDetails = (
     placeId: string,
@@ -171,7 +173,7 @@ export default function MapWithClinics({
         }}
       >
         <>
-          {markers.map((place, index) => {
+          {clinics.map((place, index) => {
             const lat = place.geometry?.location?.lat();
             const lng = place.geometry?.location?.lng();
 
@@ -193,8 +195,8 @@ export default function MapWithClinics({
         </button>
       </div> */}
       <ul className="my-4">
-        {markers
-          .filter((place) => place.rating != null)
+        {clinics
+          .filter((place) => place.rating !== null)
           .sort((a, b) => b.rating! - a.rating!)
           .map((place) => {
             const lat = place.geometry?.location?.lat();

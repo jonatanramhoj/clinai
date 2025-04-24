@@ -9,7 +9,7 @@ import ArrowRightToBracket from "@/icons/ArrowRightToBracket";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/useFirebase";
 import Modal from "./Dialog";
 import Settings from "./Settings";
 

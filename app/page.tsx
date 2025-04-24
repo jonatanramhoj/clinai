@@ -5,7 +5,8 @@ import Modal from "@/components/Dialog";
 import ArrowUp from "@/icons/ArrowUp";
 import ClinicDetails from "@/components/ClinicDetails";
 import Map from "@/components/Map";
-import { Clinic } from "@/models/Clinics";
+import { Clinic } from "@/models/Types";
+import useFirebase from "@/hooks/useFirebase";
 
 export default function Home() {
   const [userQuery, setUserQuery] = useState("");
@@ -14,8 +15,12 @@ export default function Home() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedClinic, setSelectedClinic] = useState({});
-  const [response, setResponse] = useState("");
+  const [diagnosis, setDiagnosis] = useState("");
   const [clinicType, setClinicType] = useState("");
+  const [clinics, setClinics] = useState<google.maps.places.PlaceResult[]>([]);
+  const [hasSavedDiagnosis, setHasSavedDiagnosis] = useState(false);
+
+  const { saveDiagnosis } = useFirebase();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUserQuery(e.target.value);
@@ -52,7 +57,7 @@ export default function Home() {
     const clinicType = parsedResponse.clinicType ?? "No clinic type found";
     console.log("clinicType", clinicType);
 
-    setResponse(diagnosis);
+    setDiagnosis(diagnosis);
     setClinicType(clinicType);
     setIsLoading(false);
   }, [userQuery]);
@@ -60,7 +65,8 @@ export default function Home() {
   const resetChat = () => {
     setUserQuery("");
     setUserSymptom("");
-    setResponse("");
+    setDiagnosis("");
+    setHasSavedDiagnosis(false);
   };
 
   const handleSelectClinic = (
@@ -83,6 +89,39 @@ export default function Home() {
       document.removeEventListener("keypress", handleEnter);
     };
   }, [handleSubmit]);
+
+  useEffect(() => {
+    if (
+      hasSavedDiagnosis ||
+      !clinics ||
+      clinics.length === 0 ||
+      !diagnosis ||
+      !userSymptom
+    )
+      return;
+
+    const sanitizedClinics = clinics.map((clinic) => ({
+      name: clinic.name,
+      address: clinic.vicinity || "",
+      placeId: clinic.place_id,
+      rating: clinic.rating,
+      userRatingsTotal: clinic.user_ratings_total,
+      types: clinic.types,
+      icon: clinic.icon,
+      lat: clinic.geometry?.location?.lat(),
+      lng: clinic.geometry?.location?.lng(),
+    }));
+
+    const userDiagnosis = {
+      symptom: userSymptom,
+      diagnosis: diagnosis,
+      clinics: sanitizedClinics,
+      date: new Date(),
+    };
+
+    saveDiagnosis(userDiagnosis);
+    setHasSavedDiagnosis(true);
+  }, [clinics, diagnosis, hasSavedDiagnosis, saveDiagnosis, userSymptom]);
 
   const hasSubmittedPrompt = userSymptom && userSymptom.length > 0;
 
@@ -136,7 +175,7 @@ export default function Home() {
           <div>
             <p className="mb-4">
               <span className="font-bold block">Suggested diagnosis</span>
-              {response}
+              {diagnosis}
             </p>
             <h3 className="mb-2">
               <span className="font-bold block">Suggested clinics</span>
@@ -145,6 +184,8 @@ export default function Home() {
               <Map
                 clinicType={clinicType}
                 handleSelectClinic={handleSelectClinic}
+                clinics={clinics}
+                setClinics={setClinics}
               />
             </div>
           </div>

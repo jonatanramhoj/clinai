@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Clinic } from "@/models/Clinics";
+import { Clinic } from "@/models/Types";
 
 const StarRating = (rating: number) => {
   const fullStars = Math.floor(rating);
