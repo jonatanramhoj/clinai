@@ -6,7 +6,7 @@ import AppProvider from "@/context/AppContext";
 
 import "./globals.css";
 import { useEffect } from "react";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/useFirebase";
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -24,7 +24,8 @@ export default function RootLayout({
   const hideNav = pathname === "/login";
 
   useEffect(() => {
-    if (!loading && user === null) {
+    if (user === undefined || loading) return;
+    if (user === null) {
       router.push("/login");
     }
   }, [loading, router, user]);
