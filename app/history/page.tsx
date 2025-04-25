@@ -1,33 +1,31 @@
 "use client";
 import useFirebase from "@/hooks/useFirebase";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Diagnosis } from "@/models/Types";
+import useSWR from "swr";
+import Loader from "@/components/Loader";
 
 export default function History() {
-  const [history, setHistory] = useState<Diagnosis[]>([]);
+  const { getAllDiagnosis, user } = useFirebase();
 
-  const { getDiagnosisHistory } = useFirebase();
+  const { data, isLoading } = useSWR(
+    !!user?.uid ? `history-${user?.uid}` : null,
+    () => getAllDiagnosis()
+  );
 
-  useEffect(() => {
-    const fetchDiagnoses = async () => {
-      const diagnoses = await getDiagnosisHistory();
-      if (diagnoses?.length) setHistory(diagnoses);
-    };
-
-    fetchDiagnoses();
-  }, [getDiagnosisHistory]);
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="max-w-[600px] m-auto px-4">
       <h1 className="font-bold text-3xl mb-4">Diagnosis History</h1>
       <ul>
-        {!history.length && (
+        {!data?.length && (
           <p className="text-gray-500 text-2xl mt-8">
             Your diagnosis history will be displayed here
           </p>
         )}
-        {history.map((item) => (
+        {data?.map((item) => (
           <li key={item.id} className="mb-4">
             <Link
               href={`/history/${item.id}`}

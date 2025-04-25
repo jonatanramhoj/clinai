@@ -2,45 +2,39 @@
 import ClinicDetails from "@/components/ClinicDetails";
 import Modal from "@/components/Dialog";
 import ArrowLeft from "@/icons/ArrowLeft";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Clinic } from "@/models/Types";
-
-const mockResponse =
-  "Sounds like a mild cold. You may want to visit a general practictioner.";
-
-const clinics = [
-  {
-    id: 1,
-    name: "Familjeläkarna Centrum",
-    address: "Bredgränd 18, 753 20 Uppsala (600m)",
-    hours: "Closed - opens 9 am Mon",
-  },
-  {
-    id: 2,
-    name: "Fålhagens health center",
-    address: "B, Stationsgatan 26, 753 23 Uppsala (1.1km)",
-    hours: "Closed - opens 9 am Mon",
-  },
-  {
-    id: 3,
-    name: "Meliva vårdcentral Kungshörnet",
-    address: "Kungsgatan 115, 753 18 Uppsala (1.6km)",
-    hours: "Closed - opens 9 am Mon",
-  },
-];
+import { Clinic, Diagnosis } from "@/models/Types";
+import { useParams } from "next/navigation";
+import useFirebase from "@/hooks/useFirebase";
+import useSWR from "swr";
+import Loader from "@/components/Loader";
 
 export default function HistoryDetails() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedClinic, setSelectedClinic] = useState({});
+  const { id } = useParams();
+  const { getDiagnosis, user } = useFirebase();
 
-  const handleSelectClinic = (
-    clinic: Clinic | google.maps.places.PlaceResult
-  ) => {
-    setSelectedClinic(clinic);
-    setIsOpen(!isOpen);
-  };
+  const { data, isLoading, error } = useSWR<Diagnosis | null>(
+    !!user?.uid ? `diagnosis-${id}` : null,
+    () => getDiagnosis(id as string)
+  );
+
+  console.log("error", error);
+  console.log("data", data);
+
+  // const handleClinicSelection = (clinic: Clinic) => {
+  //   setIsOpen(!isOpen);
+  //   setSelectedClinic(clinic);
+  // };
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (!data) return null;
 
   return (
     <div className="max-w-[600px] m-auto px-4">
@@ -48,35 +42,27 @@ export default function HistoryDetails() {
         <Link href="/history" className="flex">
           <ArrowLeft /> <span className="ml-2 font-bold">Back</span>
         </Link>
-        <h2 className="font-bold">Checkup</h2>
+        <h2 className="font-bold">Checkup: {data.id}</h2>
       </div>
       {/* CHAT convo */}
       <div className="w-full justify-items-end">
         <div className="bg-[#2f2f2f] rounded-3xl py-3 px-5 my-6 self-end">
-          <p>Soar throat and tired</p>
+          <p>{data.symptom}</p>
         </div>
       </div>
       <div>
-        <p className="mb-4">{mockResponse}</p>
-        <h3 className="font-bold mb-2">General practictioners</h3>
-        <div className="mb-4">
-          <Image
-            src="/clinics-nearby.png"
-            width={700}
-            height={300}
-            alt=""
-            className="rounded-3xl h-[300px] object-cover"
-          />
-        </div>
+        <p className="font-bold mb-2">Suggested diagnosis</p>
+        <p className="mb-4">{data.diagnosis}</p>
+        <p className="font-bold mb-2">Suggested clinics</p>
         <ul>
-          {clinics.map((clinic) => (
+          {data?.clinics.map((clinic) => (
             <li
-              key={clinic.id}
-              className="mb-2 pb-2 border-b border-gray-500 last-of-type:border-0 cursor-pointer"
-              onClick={() => handleSelectClinic(clinic)}
+              // onClick={() => handleClinicSelection(clinic as Clinic)}
+              key={clinic.placeId}
+              className="mb-2 pb-2 border-b border-gray-200 dark:border-gray-500 cursor-pointer last-of-type:border-b-0"
             >
-              <h3 className="text-gray-300 font-bold text-lg">{clinic.name}</h3>
-              <p className="text-gray-300">{clinic.address}</p>
+              <p>{clinic.name}</p>
+              <p>{clinic.address}</p>
             </li>
           ))}
         </ul>

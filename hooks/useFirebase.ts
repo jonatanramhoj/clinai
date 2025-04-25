@@ -13,7 +13,7 @@ import {
   getDocs,
   Timestamp,
 } from "firebase/firestore";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { auth, db } from "@/firebase/firebase";
 import { Diagnosis } from "@/models/Types";
 
@@ -21,18 +21,18 @@ const provider = new GoogleAuthProvider();
 
 const useFirebase = () => {
   const [user, setUser] = useState<User | null | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    return auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
       setUser(user);
       setLoading(false);
     });
+    return () => unsubscribe();
   }, []);
 
   const signinWithGoogle = async () => {
     try {
-      setLoading(true);
       const { user } = await signInWithPopup(auth, provider);
       const userDocRef = doc(db, "users", user.uid);
       const userDocSnap = await getDoc(userDocRef);
@@ -89,17 +89,13 @@ const useFirebase = () => {
     }
   };
 
-  const getDiagnosisHistory = useCallback(async () => {
-    if (!user?.uid) return;
-
+  const getAllDiagnosis = async () => {
     try {
-      setLoading(true);
-      const diagnosisRef = collection(db, `users/${user.uid}/diagnosis`);
+      const diagnosisRef = collection(db, `users/${user?.uid}/diagnosis`);
       const snapshot = await getDocs(diagnosisRef);
 
       const diagnoses = snapshot.docs.map((doc) => {
         const data = doc.data();
-
         return {
           id: doc.id,
           symptom: data.symptom,
@@ -118,7 +114,29 @@ const useFirebase = () => {
     } finally {
       setLoading(false);
     }
-  }, [user?.uid]);
+  };
+
+  const getDiagnosis = async (
+    diagnosisId: string
+  ): Promise<Diagnosis | null> => {
+    try {
+      const diagnosisRef = doc(
+        db,
+        `users/${user?.uid}/diagnosis/${diagnosisId}`
+      );
+      const snapshot = await getDoc(diagnosisRef);
+
+      if (!snapshot.exists()) return null;
+
+      return {
+        id: snapshot.id,
+        ...(snapshot.data() as Diagnosis),
+      };
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
 
   return {
     signinWithGoogle,
@@ -126,7 +144,8 @@ const useFirebase = () => {
     user,
     loading,
     saveDiagnosis,
-    getDiagnosisHistory,
+    getAllDiagnosis,
+    getDiagnosis,
   };
 };
 
