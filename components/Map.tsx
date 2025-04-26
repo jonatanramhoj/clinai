@@ -1,13 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  GoogleMap,
-  Marker,
-  useLoadScript,
-  Libraries,
-} from "@react-google-maps/api";
-
-const libraries: Libraries = ["places", "geometry"];
+import { GoogleMap, Marker } from "@react-google-maps/api";
 
 const mapContainerStyle = {
   width: "100%",
@@ -20,18 +13,19 @@ export default function MapWithClinics({
   handleSelectClinic,
   clinics,
   setClinics,
+  setMapCenter,
+  mapCenter,
+  mapZoom,
 }: {
   clinicType: string;
   handleSelectClinic: (place: google.maps.places.PlaceResult) => void;
   clinics: google.maps.places.PlaceResult[];
   setClinics: (clinic: google.maps.places.PlaceResult[]) => void;
+  setMapCenter: (center: google.maps.LatLngLiteral | null) => void;
+  mapCenter: google.maps.LatLngLiteral | null;
+  mapZoom: number;
 }) {
-  const [center, setCenter] = useState<google.maps.LatLngLiteral | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
-    libraries,
-  });
 
   const mapRef = useRef<google.maps.Map | null>(null);
 
@@ -49,21 +43,21 @@ export default function MapWithClinics({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
-        setCenter(pos);
+        setMapCenter(pos);
       },
       (error) => {
         console.error("Error getting location", error);
       }
     );
-  }, []);
+  }, [setMapCenter]);
 
   // do the google maps search
   useEffect(() => {
-    if (!center || !mapRef.current || !clinicType) return;
+    if (!mapCenter || !mapRef.current || !clinicType) return;
 
     const service = new google.maps.places.PlacesService(mapRef.current);
     const request: google.maps.places.PlaceSearchRequest = {
-      location: center,
+      location: mapCenter,
       // radius: 5000,
       rankBy: google.maps.places.RankBy.DISTANCE, // replaces `radius`
       keyword: clinicType, // use keyword instead of query for nearbySearch
@@ -85,7 +79,7 @@ export default function MapWithClinics({
           "Nearby search sparse or failed. Falling back to textSearch."
         );
         const fallbackRequest: google.maps.places.TextSearchRequest = {
-          location: center,
+          location: mapCenter,
           radius: 5000,
           query: clinicType,
         };
@@ -104,7 +98,7 @@ export default function MapWithClinics({
         });
       }
     });
-  }, [center, clinicType, mapLoaded, setClinics]);
+  }, [mapCenter, clinicType, mapLoaded, setClinics]);
 
   const getPlaceDetails = (
     placeId: string,
@@ -158,14 +152,14 @@ export default function MapWithClinics({
     );
   };
 
-  if (!isLoaded || !center) return <p>Loading map...</p>;
+  if (!mapCenter) return <p>Loading map...</p>;
 
   return (
     <>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
-        zoom={13}
-        center={center}
+        zoom={mapZoom}
+        center={mapCenter}
         onLoad={onMapLoad}
         options={{
           disableDefaultUI: true,

@@ -9,7 +9,7 @@ export default function History() {
 
   const { data, isLoading } = useSWR(
     !!user?.uid ? `history-${user?.uid}` : null,
-    () => getAllDiagnosis()
+    getAllDiagnosis
   );
 
   if (isLoading) {

@@ -12,6 +12,8 @@ import {
   setDoc,
   getDocs,
   Timestamp,
+  orderBy,
+  query,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { auth, db } from "@/firebase/firebase";
@@ -92,7 +94,8 @@ const useFirebase = () => {
   const getAllDiagnosis = async () => {
     try {
       const diagnosisRef = collection(db, `users/${user?.uid}/diagnosis`);
-      const snapshot = await getDocs(diagnosisRef);
+      const diagnosisQuery = query(diagnosisRef, orderBy("date", "desc"));
+      const snapshot = await getDocs(diagnosisQuery);
 
       const diagnoses = snapshot.docs.map((doc) => {
         const data = doc.data();

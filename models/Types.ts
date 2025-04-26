@@ -1,4 +1,4 @@
-export type Clinic = {
+export type ClinicDetails = {
   name: string;
   formatted_address: string;
   formatted_phone_number: string;
@@ -9,15 +9,7 @@ export type Clinic = {
   rating: number;
 };
 
-export type Diagnosis = {
-  id?: string; // optional when saving
-  symptom: string;
-  diagnosis: string;
-  clinics: SimplifiedClinic[]; // instead of full PlaceResult
-  date: Date;
-};
-
-export type SimplifiedClinic = {
+export type MapClinicMarker = {
   name?: string;
   address?: string;
   placeId?: string;
@@ -25,6 +17,16 @@ export type SimplifiedClinic = {
   userRatingsTotal?: number;
   types?: string[];
   icon?: string;
-  lat?: number;
-  lng?: number;
+  lat: number;
+  lng: number;
+};
+
+export type Diagnosis = {
+  id?: string;
+  symptom: string;
+  diagnosis: string;
+  clinics: MapClinicMarker[];
+  center: google.maps.LatLngLiteral | null;
+  zoom: number;
+  date: Date;
 };

@@ -3,9 +3,9 @@ import { useState, ChangeEvent, useEffect, useCallback } from "react";
 import Loader from "@/components/Loader";
 import Modal from "@/components/Dialog";
 import ArrowUp from "@/icons/ArrowUp";
-import ClinicDetails from "@/components/ClinicDetails";
+import ClinicInfo from "@/components/ClinicDetails";
 import Map from "@/components/Map";
-import { Clinic } from "@/models/Types";
+import { ClinicDetails } from "@/models/Types";
 import useFirebase from "@/hooks/useFirebase";
 
 export default function Home() {
@@ -19,6 +19,11 @@ export default function Home() {
   const [clinicType, setClinicType] = useState("");
   const [clinics, setClinics] = useState<google.maps.places.PlaceResult[]>([]);
   const [hasSavedDiagnosis, setHasSavedDiagnosis] = useState(false);
+  const [mapCenter, setMapCenter] = useState<google.maps.LatLngLiteral | null>(
+    null
+  );
+
+  const mapZoom = 13;
 
   const { saveDiagnosis } = useFirebase();
 
@@ -70,7 +75,7 @@ export default function Home() {
   };
 
   const handleSelectClinic = (
-    clinic: Clinic | google.maps.places.PlaceResult
+    clinic: ClinicDetails | google.maps.places.PlaceResult
   ) => {
     setSelectedClinic(clinic);
     setIsOpen(!isOpen);
@@ -96,32 +101,57 @@ export default function Home() {
       !clinics ||
       clinics.length === 0 ||
       !diagnosis ||
-      !userSymptom
+      !userSymptom ||
+      !mapCenter ||
+      !mapZoom
     )
       return;
 
-    const sanitizedClinics = clinics.map((clinic) => ({
-      name: clinic.name,
-      address: clinic.vicinity || "",
-      placeId: clinic.place_id,
-      rating: clinic.rating,
-      userRatingsTotal: clinic.user_ratings_total,
-      types: clinic.types,
-      icon: clinic.icon,
-      lat: clinic.geometry?.location?.lat(),
-      lng: clinic.geometry?.location?.lng(),
-    }));
+    const sanitizedClinics = clinics
+      .map((clinic) => {
+        const lat = clinic.geometry?.location?.lat();
+        const lng = clinic.geometry?.location?.lng();
+
+        if (lat === undefined || lng === undefined) {
+          return null;
+        }
+
+        return {
+          name: clinic.name,
+          address: clinic.vicinity || "",
+          placeId: clinic.place_id,
+          rating: clinic.rating,
+          userRatingsTotal: clinic.user_ratings_total,
+          types: clinic.types,
+          icon: clinic.icon,
+          lat,
+          lng,
+        };
+      })
+      .filter((clinic) => clinic !== null);
 
     const userDiagnosis = {
       symptom: userSymptom,
       diagnosis: diagnosis,
       clinics: sanitizedClinics,
+      center: {
+        lat: mapCenter.lat,
+        lng: mapCenter.lng,
+      },
+      zoom: mapZoom,
       date: new Date(),
     };
 
     saveDiagnosis(userDiagnosis);
     setHasSavedDiagnosis(true);
-  }, [clinics, diagnosis, hasSavedDiagnosis, saveDiagnosis, userSymptom]);
+  }, [
+    clinics,
+    diagnosis,
+    hasSavedDiagnosis,
+    mapCenter,
+    saveDiagnosis,
+    userSymptom,
+  ]);
 
   const hasSubmittedPrompt = userSymptom && userSymptom.length > 0;
 
@@ -186,6 +216,9 @@ export default function Home() {
                 handleSelectClinic={handleSelectClinic}
                 clinics={clinics}
                 setClinics={setClinics}
+                mapZoom={mapZoom}
+                setMapCenter={setMapCenter}
+                mapCenter={mapCenter}
               />
             </div>
           </div>
@@ -193,7 +226,7 @@ export default function Home() {
         <Modal
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          content={<ClinicDetails clinic={selectedClinic as Clinic} />}
+          content={<ClinicInfo clinic={selectedClinic} />}
         />
       </div>
     </>

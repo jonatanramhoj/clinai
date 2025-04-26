@@ -1,19 +1,18 @@
 "use client";
-import ClinicDetails from "@/components/ClinicDetails";
-import Modal from "@/components/Dialog";
+// import ClinicDetails from "@/components/ClinicDetails";
+// import Modal from "@/components/Dialog";
 import ArrowLeft from "@/icons/ArrowLeft";
 // import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { Clinic, Diagnosis } from "@/models/Types";
+import { Diagnosis } from "@/models/Types";
 import { useParams } from "next/navigation";
 import useFirebase from "@/hooks/useFirebase";
 import useSWR from "swr";
 import Loader from "@/components/Loader";
+// import MapWithClinics from "@/components/Map";
 
 export default function HistoryDetails() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedClinic, setSelectedClinic] = useState({});
+  // const [isOpen, setIsOpen] = useState(false);
   const { id } = useParams();
   const { getDiagnosis, user } = useFirebase();
 
@@ -24,11 +23,6 @@ export default function HistoryDetails() {
 
   console.log("error", error);
   console.log("data", data);
-
-  // const handleClinicSelection = (clinic: Clinic) => {
-  //   setIsOpen(!isOpen);
-  //   setSelectedClinic(clinic);
-  // };
 
   if (isLoading) {
     return <Loader />;
@@ -42,11 +36,11 @@ export default function HistoryDetails() {
         <Link href="/history" className="flex">
           <ArrowLeft /> <span className="ml-2 font-bold">Back</span>
         </Link>
-        <h2 className="font-bold">Checkup: {data.id}</h2>
+        <h2 className="font-bold line-clamp-1 max-w-[250px]">{data.symptom}</h2>
       </div>
       {/* CHAT convo */}
       <div className="w-full justify-items-end">
-        <div className="bg-[#2f2f2f] rounded-3xl py-3 px-5 my-6 self-end">
+        <div className="bg-gray-100 dark:bg-[#2f2f2f] rounded-3xl py-3 px-5 my-6 self-end">
           <p>{data.symptom}</p>
         </div>
       </div>
@@ -54,24 +48,22 @@ export default function HistoryDetails() {
         <p className="font-bold mb-2">Suggested diagnosis</p>
         <p className="mb-4">{data.diagnosis}</p>
         <p className="font-bold mb-2">Suggested clinics</p>
-        <ul>
-          {data?.clinics.map((clinic) => (
-            <li
-              // onClick={() => handleClinicSelection(clinic as Clinic)}
-              key={clinic.placeId}
-              className="mb-2 pb-2 border-b border-gray-200 dark:border-gray-500 cursor-pointer last-of-type:border-b-0"
-            >
-              <p>{clinic.name}</p>
-              <p>{clinic.address}</p>
-            </li>
-          ))}
-        </ul>
+        {/* Reuse the map here */}
+        {/* <MapWithClinics
+          clinicType={clinicType}
+          handleSelectClinic={handleSelectClinic}
+          clinics={clinics}
+          setClinics={setClinics}
+          mapZoom={mapZoom}
+          setMapCenter={setMapCenter}
+          mapCenter={mapCenter}
+        /> */}
       </div>
-      <Modal
+      {/* <Modal
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        content={<ClinicDetails clinic={selectedClinic as Clinic} />}
-      />
+        content={<ClinicDetails clinic={selectedClinic as MapClinicMarker} />}
+      /> */}
     </div>
   );
 }
